@@ -1,0 +1,281 @@
+<!--
+ Copyright 2019 Smart-Tech Controle e Automação
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+		 http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="dde endpoint">
+	<div class="form-row">
+		<label for="node-config-input-address"><i class="fa fa-globe"></i> <span data-i18n="dde.label.address"></span></label>
+		<input class="input-append-left" type="text" id="node-config-input-address" data-i18n="[placeholder]dde.placeholder.address" style="width: 40%;">
+		<label for="node-config-input-port" style="margin-left: 10px; width: 35px; "> <span data-i18n="dde.label.port"></span></label>
+		<input type="text" id="node-config-input-port" data-i18n="[placeholder]dde.label.port" style="width: 50px">
+	</div>
+	<div class="form-row">
+		<label for="node-config-input-service"><i class="fa fa-exchange"></i> <span data-i18n="dde.label.service"></span></label>
+		<input type="text" id="node-config-input-service" data-i18n="[placeholder]dde.placeholder.service">
+	</div>
+	<div class="form-row">
+		<label for="node-config-input-timeout"><i class="fa fa-clock-o"></i> <span data-i18n="dde.label.timeout"></span></label>
+		<input type="text" id="node-config-input-timeout" data-i18n="[placeholder]dde.label.timeout" style="width: 60px;"> <span>ms</span>
+	</div>
+	<div class="form-row">
+		<label>&nbsp;</label>
+		<input type="checkbox" id="node-input-trackadvise" style="display: inline-block; width: auto; vertical-align: top;">
+		<label for="node-input-trackadvise" style="width:70%;"><span data-i18n="dde.label.trackadvise"></span></label>
+	</div>
+	<div class="form-row">
+		<label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="dde.label.name"></span></label>
+		<input type="text" id="node-config-input-name" data-i18n="[placeholder]dde.label.name">
+	</div>
+</script>
+
+<script type="text/x-red" data-help-name="dde endpoint">
+	<p>Configures the connection to a DDE Endpoint</p>
+
+	<!-- TODO! -->
+</script>
+
+<script type="text/javascript">
+	/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+	var saveAs = saveAs || function (e) { "use strict"; if (typeof e === "undefined" || typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) { return } var t = e.document, n = function () { return e.URL || e.webkitURL || e }, r = t.createElementNS("http://www.w3.org/1999/xhtml", "a"), o = "download" in r, a = function (e) { var t = new MouseEvent("click"); e.dispatchEvent(t) }, i = /constructor/i.test(e.HTMLElement) || e.safari, f = /CriOS\/[\d]+/.test(navigator.userAgent), u = function (t) { (e.setImmediate || e.setTimeout)(function () { throw t }, 0) }, s = "application/octet-stream", d = 1e3 * 40, c = function (e) { var t = function () { if (typeof e === "string") { n().revokeObjectURL(e) } else { e.remove() } }; setTimeout(t, d) }, l = function (e, t, n) { t = [].concat(t); var r = t.length; while (r--) { var o = e["on" + t[r]]; if (typeof o === "function") { try { o.call(e, n || e) } catch (a) { u(a) } } } }, p = function (e) { if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)) { return new Blob([String.fromCharCode(65279), e], { type: e.type }) } return e }, v = function (t, u, d) { if (!d) { t = p(t) } var v = this, w = t.type, m = w === s, y, h = function () { l(v, "writestart progress write writeend".split(" ")) }, S = function () { if ((f || m && i) && e.FileReader) { var r = new FileReader; r.onloadend = function () { var t = f ? r.result : r.result.replace(/^data:[^;]*;/, "data:attachment/file;"); var n = e.open(t, "_blank"); if (!n) e.location.href = t; t = undefined; v.readyState = v.DONE; h() }; r.readAsDataURL(t); v.readyState = v.INIT; return } if (!y) { y = n().createObjectURL(t) } if (m) { e.location.href = y } else { var o = e.open(y, "_blank"); if (!o) { e.location.href = y } } v.readyState = v.DONE; h(); c(y) }; v.readyState = v.INIT; if (o) { y = n().createObjectURL(t); setTimeout(function () { r.href = y; r.download = u; a(r); h(); c(y); v.readyState = v.DONE }); return } S() }, w = v.prototype, m = function (e, t, n) { return new v(e, t || e.name || "download", n) }; if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) { return function (e, t, n) { t = t || e.name || "download"; if (!n) { e = p(e) } return navigator.msSaveOrOpenBlob(e, t) } } w.abort = function () { }; w.readyState = w.INIT = 0; w.WRITING = 1; w.DONE = 2; w.error = w.onwritestart = w.onprogress = w.onwrite = w.onabort = w.onerror = w.onwriteend = null; return m }(typeof self !== "undefined" && self || typeof window !== "undefined" && window || this.content); if (typeof module !== "undefined" && module.exports) { module.exports.saveAs = saveAs } else if (typeof define !== "undefined" && define !== null && define.amd !== null) { define("FileSaver.js", function () { return saveAs }) }
+</script>
+
+<script type="text/javascript">
+
+	RED.nodes.registerType('dde endpoint', {
+		category: 'config',
+		defaults: {
+			address: {
+				value: "",
+				required: true
+			},
+			port: {
+				value: "8888",
+				validate: RED.validators.number()
+			},
+			service: {
+				value: "",
+				required: true
+			},
+			timeout: {
+				value: 10000
+			},
+			trackadvise: {
+				value: true
+			},
+			name: {
+				value: ""
+			}
+		},
+		label: function () {
+			if (this.name) {
+				return this.name
+			} else if (this.service && this.address) {
+				return this.service + "@" + this.address;
+			} else {
+				return "dde endpoint";
+			}
+		}
+	});
+</script>
+
+<!-- ######################################################################################## -->
+
+<script type="text/x-red" data-template-name="dde">
+	<div class="form-row">
+		<label for="node-input-endpoint"><i class="fa fa-bolt"></i> <span data-i18n="dde.label.endpoint"></span></label>
+		<input type="text" id="node-input-endpoint" data-i18n="[placeholder]dde.label.endpoint">
+	</div>
+	<div class="form-row">
+		<label for="node-input-function"><i class="fa fa-sliders"></i> <span data-i18n="dde.label.function"></span></label>
+		<select type="text" id="node-input-function">
+			<option value="request" data-i18n="dde.function.request"></option>
+			<option value="poke" data-i18n="dde.function.poke"></option>
+			<option value="execute" data-i18n="dde.function.execute"></option>
+			<option value="advise" data-i18n="dde.function.advise"></option>
+			<option value="advise-stop" data-i18n="dde.function.advise-stop"></option>
+			<option value="advise-stop-all" data-i18n="dde.function.advise-stop-all"></option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-input-topic"><i class="fa fa-tasks"></i> <span data-i18n="dde.label.topic"></span></label>
+		<input type="text" id="node-input-topic" data-i18n="[placeholder]dde.label.topic">
+	</div>
+	<div class="form-row" id="row-node-input-item">
+		<label for="node-input-item"><i class="fa fa-list"></i> <span data-i18n="dde.label.item"></span></label>
+		<input type="text" id="node-input-item" data-i18n="[placeholder]dde.label.item">
+	</div>
+	<div class="form-row" id="row-node-input-command">
+		<label for="node-input-command"><i class="fa fa-file"></i> <span data-i18n="dde.label.command"></span></label>
+		<input type="text" id="node-input-command" data-i18n="[placeholder]dde.label.command">
+	</div>
+	<div class="form-row" id="row-node-input-format">
+		<label for="node-input-format"><i class="fa fa-sign-out"></i> <span data-i18n="dde.label.format"></span></label>
+		<select type="text" id="node-input-format">
+			<option value=""></option>
+			<option value="CF_TEXT">CF_TEXT</option>
+			<option value="CF_BITMAP">CF_BITMAP</option>
+			<option value="CF_METAFILEPICT">CF_METAFILEPICT</option>
+			<option value="CF_SYLK">CF_SYLK</option>
+			<option value="CF_DIF">CF_DIF</option>
+			<option value="CF_TIFF">CF_TIFF</option>
+			<option value="CF_OEMTEXT">CF_OEMTEXT</option>
+			<option value="CF_DIB">CF_DIB</option>
+			<option value="CF_PALETTE">CF_PALETTE</option>
+			<option value="CF_PENDATA">CF_PENDATA</option>
+			<option value="CF_RIFF">CF_RIFF</option>
+			<option value="CF_WAVE">CF_WAVE</option>
+			<option value="CF_UNICODETEXT">CF_UNICODETEXT</option>
+			<option value="CF_ENHMETAFILE">CF_ENHMETAFILE</option>
+			<option value="CF_HDROP">CF_HDROP</option>
+			<option value="CF_LOCALE">CF_LOCALE</option>
+			<option value="CF_DIBV5">CF_DIBV5</option>
+			<option value="CF_OWNERDISPLAY">CF_OWNERDISPLAY</option>
+			<option value="CF_DSPTEXT">CF_DSPTEXT</option>
+			<option value="CF_DSPBITMAP">CF_DSPBITMAP</option>
+			<option value="CF_DSPMETAFILEPICT">CF_DSPMETAFILEPICT</option>
+			<option value="CF_DSPENHMETAFILE">CF_DSPENHMETAFILE</option>
+			<option value="CF_PRIVATEFIRST">CF_PRIVATEFIRST</option>
+			<option value="CF_PRIVATELAST">CF_PRIVATELAST</option>
+			<option value="CF_GDIOBJFIRST">CF_GDIOBJFIRST</option>
+			<option value="CF_GDIOBJLAST">CF_GDIOBJLAST</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="dde.label.name"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]dde.label.name">
+	</div>
+</script>
+
+<script type="text/x-red" data-help-name="dde">
+	<p>Exchange data with a DDE endpoint over the network</p>
+	
+	<!-- TODO!
+	<h3>Details</h3>
+	<p>The behavior of this node is changed according to the selected function. Each function
+		has its own configuration, expects different parameters in the messages, and sends
+		different messages out
+	</p>
+	<dl class="message-properties">
+		<dt>Cycle Time</dt>
+		<dd>
+			Changes the time interval between each cyclic read 
+			of variables. It expects a message with <code>payload</code> with a 
+			positive number, being the time in milliseconds between each read. A 
+			value of zero disables the cyclic read.
+		</dd>
+
+		<dt>Trigger read</dt>
+		<dd>
+			Manually triggers a read cycle. No message parameters are used and the 
+			same message is sent on the output. Useful when longer cycle times are 
+			used, but an instant feedback is needed (for example after changing a 
+			variable). Note that the <i>dde</i> nodes are still required to read
+			the values of the variables.
+		</dd>
+	</dl>
+	-->
+</script>
+
+<script type="text/javascript">
+	RED.nodes.registerType('dde', {
+		category: 'network',
+		defaults: {
+			endpoint: {
+				value: "",
+				type: "dde endpoint",
+				required: true
+			},
+			function: {
+				value: "request",
+				required: true
+			},
+			topic: {
+				value: ""
+			},
+			item: {
+				value: ""
+			},
+			format: {
+				value: "CF_TEXT"
+			},
+			command: {
+				value: ""
+			},
+			name: {
+				value: ""
+			}
+		},
+		color: "#5FACE0",
+		inputs: 1,
+		outputs: 2,
+		icon: "serial.png",
+		label: function () {
+			var self = this;
+
+			if (this.name) return this.name;
+
+			var endpointNode = RED.nodes.node(this.endpoint);
+			if (endpointNode) {
+				if (this.function) {
+					return endpointNode.label() + ": " + this._("dde.function." + this.function);
+				} else {
+					return endpointNode.label()
+				}
+			}
+			return "dde";
+		},
+		labelStyle: function () {
+			return this.name ? "node_label_italic" : "";
+		},
+		oneditprepare: function () {
+			var self = this;
+
+			var fieldFunction = $('#node-input-function');
+
+			var rowItem = $('#row-node-input-item');
+			var rowFormat = $('#row-node-input-format');
+			var rowCommand = $('#row-node-input-command');
+
+			fieldFunction.change(function() {
+				var curVal = fieldFunction.val();
+
+				console.log('fieldFunction', curVal);
+
+				switch (curVal) {
+					case 'request':
+					case 'poke':
+					case 'advise':
+					case 'advise-stop':
+						rowItem.show();
+						rowFormat.show();
+						rowCommand.hide();
+						break;
+					case 'execute':
+						rowItem.hide();
+						rowFormat.hide();
+						rowCommand.show();
+						break;
+					case 'advise-stop-all':
+					default:
+						rowItem.hide();
+						rowFormat.hide();
+						rowCommand.hide();
+				}
+			});
+
+			fieldFunction.change();
+		}
+	});
+</script>

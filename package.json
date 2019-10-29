@@ -1,0 +1,30 @@
+{
+    "name": "node-red-contrib-dde",
+    "version": "1.0.0",
+    "description": "A Node-RED talk to DDE endpoints over the network",
+    "dependencies": {
+        "netdde": "^1.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/netsmarttech/node-red-contrib-dde.git"
+    },
+    "bugs": {
+        "url": "https://github.com/netsmarttech/node-red-contrib-dde/issues"
+    },
+    "keywords": [
+        "hardware",
+        "dde",
+        "netdde",
+        "windows",
+        "cnc",
+        "node-red"
+    ],
+    "node-red": {
+        "nodes": {
+            "dde": "red/dde.js"
+        }
+    },
+    "author": "Smart-Tech",
+    "license": "Apache-2.0"
+}

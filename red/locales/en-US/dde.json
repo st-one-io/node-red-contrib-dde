@@ -1,0 +1,45 @@
+{
+    "dde": {
+        "function": {
+            "request": "Request",
+            "poke": "Poke",
+            "execute": "Execute",
+            "advise": "Advise",
+            "advise-stop": "Stop Advise",
+            "advise-stop-all": "Stop All Advise"
+        },
+        "status": {
+            "online": "online",
+            "badvalues": "failure",
+            "offline": "offline",
+            "unknown": "unknown",
+            "connecting": "connecting"
+        },
+        "label": {
+            "name": "Name",
+            "function": "Function",
+            "endpoint": "Endpoint",
+            "topic": "Topic",
+            "item": "Item",
+            "format": "Format",
+            "command": "Command",
+            "address": "Address",
+            "port": "Port",
+            "service": "Service",
+            "timeout": "Timeout",
+            "trackadvise": "Resubscribe to advised items on reconnection"
+        },
+        "placeholder": {
+            "address": "IP or FQDN (pc.example.com)",
+            "service": "e.g PROGMAN"
+        },
+        "error": {
+            "noservice": "Empty 'service' on configuration",
+            "onreadvise": "Error resubscribing to advise item: __err__",
+            "onconnect": "Error connecting to endpoint: __err__",
+            "ondisconnect": "Error disconnecting from endpoint: __err__",
+            "missingconfig": "Missing endpoint on configuration",
+            "invalidcontrolfunction": "Unknown control function configured"
+        }
+    }
+}
