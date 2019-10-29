@@ -108,7 +108,7 @@
 			<option value="advise-stop-all" data-i18n="dde.function.advise-stop-all"></option>
 		</select>
 	</div>
-	<div class="form-row">
+	<div class="form-row" id="row-node-input-topic">
 		<label for="node-input-topic"><i class="fa fa-tasks"></i> <span data-i18n="dde.label.topic"></span></label>
 		<input type="text" id="node-input-topic" data-i18n="[placeholder]dde.label.topic">
 	</div>
@@ -244,6 +244,7 @@
 
 			var fieldFunction = $('#node-input-function');
 
+			var rowTopic = $('#row-node-input-topic');
 			var rowItem = $('#row-node-input-item');
 			var rowFormat = $('#row-node-input-format');
 			var rowCommand = $('#row-node-input-command');
@@ -258,17 +259,20 @@
 					case 'poke':
 					case 'advise':
 					case 'advise-stop':
+						rowTopic.show();
 						rowItem.show();
 						rowFormat.show();
 						rowCommand.hide();
 						break;
 					case 'execute':
+						rowTopic.show();
 						rowItem.hide();
 						rowFormat.hide();
 						rowCommand.show();
 						break;
 					case 'advise-stop-all':
 					default:
+						rowTopic.hide();
 						rowItem.hide();
 						rowFormat.hide();
 						rowCommand.hide();

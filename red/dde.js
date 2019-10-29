@@ -112,7 +112,7 @@ module.exports = function (RED) {
         this.setMaxListeners(0); //avoids warnings when we have a lot of connected nodes
 
         var connOpts = {
-            host: config.host,
+            host: config.address,
             port: config.port,
             timeout: config.timeout,
         }
@@ -193,7 +193,7 @@ module.exports = function (RED) {
         }
 
         function onAdvise(d) {
-            this.emit('advise', d);
+            node.emit('advise', d);
         }
 
         function checkOfflineTopics() {
@@ -212,7 +212,7 @@ module.exports = function (RED) {
         }
 
         function onTopicDisconnect(topic) {
-            this.emit('topic_disconnect', topic);
+            node.emit('topic_disconnect', topic);
 
             if (trackAdvise) {
                 offlineTopics.add(topic);
@@ -302,11 +302,10 @@ module.exports = function (RED) {
             }
 
             Promise.all(res).then(d => {
-                let payload = d.map(v => v.data)
-                if (payload.length == 1) {
-                    payload = payload[0];
+                if (d.length == 1) {
+                    d = d[0];
                 }
-                msg.payload = payload;
+                msg.payload = d;
                 node.send(msg);
             }).catch(e => {
                 node.error(e, msg);
@@ -405,14 +404,6 @@ module.exports = function (RED) {
             });
         }
 
-        function onMessage(msg) {
-            let topic = config.topic || msg.topic;
-            let item = config.item || msg.item;
-            let format = netdde.Constants.dataType[config.format || msg.format];
-            let command = config.command || msg.payload;
-            let data = msg.payload;
-        }
-
         function onAdvise(d) {
             node.send([
                 null,
@@ -428,10 +419,13 @@ module.exports = function (RED) {
         node.status(generateStatus(endpoint.getStatus(), statusVal));
 
         switch (config.function) {
+            case 'advise': 
+                node.on('input', doAdvise);
+                endpoint.on('advise', onAdvise);
+                break;
             case 'request': node.on('input', doRequest); break;
             case 'poke': node.on('input', doPoke); break;
             case 'execute': node.on('input', doExecute); break;
-            case 'advise': node.on('input', doAdvise); break;
             case 'advise-stop': node.on('input', doAdviseStop); break;
             case 'advise-stop-all': node.on('input', doAdviseStopAll); break;
             default:
@@ -439,7 +433,6 @@ module.exports = function (RED) {
         }
 
         endpoint.on('__STATUS__', onEndpointStatus);
-        endpoint.on('advise', onAdvise);
 
         node.on('close', function (done) {
             endpoint.removeListener('__STATUS__', onEndpointStatus);
