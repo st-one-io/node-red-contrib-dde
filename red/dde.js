@@ -115,6 +115,7 @@ module.exports = function (RED) {
             host: config.address,
             port: config.port,
             timeout: config.timeout,
+            process: "Node-RED"
         }
         var conn = new netdde.NetDDEClient(service, connOpts);
         conn.on('error', onError);
