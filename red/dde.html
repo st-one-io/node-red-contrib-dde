@@ -219,7 +219,7 @@
 		},
 		color: "#5FACE0",
 		inputs: 1,
-		outputs: 2,
+		outputs: 1,
 		icon: "serial.png",
 		label: function () {
 			var self = this;
@@ -280,6 +280,10 @@
 			});
 
 			fieldFunction.change();
+		},
+		oneditsave: function() {
+			var func = $('#node-input-function').val();
+			this.outputs = func == 'advise' ? 2 : 1;
 		}
 	});
 </script>
