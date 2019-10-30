@@ -117,7 +117,7 @@ module.exports = function (RED) {
             timeout: config.timeout,
         }
         var conn = new netdde.NetDDEClient(service, connOpts);
-        conn.on('error', reconnect);
+        conn.on('error', onError);
         conn.on('close', reconnect);
         conn.on('advise', onAdvise);
         conn.on('topic_disconnect', onTopicDisconnect);
@@ -228,11 +228,17 @@ module.exports = function (RED) {
             readvise();
         }
 
-        function reconnect(err) {
-            if (err) {
-                node.error(RED._("dde.error.onconnect", { err: err.toString() }), {});
-            }
+        function onConnectError(err){
+            node.error(RED._("dde.error.onconnect", { err: err.toString() }), {});
+            reconnect();
+        }
 
+        function onError(err){
+            node.error(err && err.toString(), {});
+            //reconnect(); // #close will get also emitted, so we reconnect from there
+        }
+
+        function reconnect() {
             clearTimeout(topicsTimeoutTimer);
             clearTimeout(connectTimeoutTimer);
 
@@ -263,7 +269,7 @@ module.exports = function (RED) {
 
         function connect() {
             manageStatus('connecting');
-            conn.connect().then(onConnect).catch(reconnect);
+            conn.connect().then(onConnect).catch(onConnectError);
         }
 
         connect();
