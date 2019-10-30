@@ -1,17 +1,6 @@
 <!--
- Copyright 2019 Smart-Tech Controle e Automação
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+  Copyright: (c) 2019, Guilherme Francescon Cittolin <gfcittolin@gmail.com>
+  GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 -->
 
 <script type="text/x-red" data-template-name="dde endpoint">
@@ -43,7 +32,22 @@
 <script type="text/x-red" data-help-name="dde endpoint">
 	<p>Configures the connection to a DDE Endpoint</p>
 
-	<!-- TODO! -->
+	<p>
+		Set the address to the IP address of the computer
+		to connect to, and the service to the remote 
+		service name (e.g. "Excel" or "PROGMAN") we want 
+		to establish a communication
+	</p>
+	<p>
+		The "timeout" field sets the amount of time in ms
+		we can wait until we consider the connection lost
+	</p>
+	<p>
+		When the "Resubscribe" checkbox is checked, the node
+		will keep track of all items that were subscribed with
+		the "Advise" function, resubscribing to them again
+		in the case the connection is lost
+	</p>
 </script>
 
 <script type="text/javascript">
@@ -161,31 +165,109 @@
 <script type="text/x-red" data-help-name="dde">
 	<p>Exchange data with a DDE endpoint over the network</p>
 	
-	<!-- TODO!
-	<h3>Details</h3>
-	<p>The behavior of this node is changed according to the selected function. Each function
-		has its own configuration, expects different parameters in the messages, and sends
-		different messages out
-	</p>
+	<h3>Inputs</h3>
 	<dl class="message-properties">
-		<dt>Cycle Time</dt>
+		<dt>payload <span class="property-type">any</span></dt>
+		<dd>The value to be written to an item on the "Poke" function</dd>
+
+		<dt>topic <span class="property-type">string</span></dt>
+		<dd>The DDE topic, when not set on the configuration</dd>
+
+		<dt>item <span class="property-type">string</span></dt>
+		<dd>The DDE item, when not set on the configuration</dd>
+
+		<dt>format <span class="property-type">string</span></dt>
 		<dd>
-			Changes the time interval between each cyclic read 
-			of variables. It expects a message with <code>payload</code> with a 
-			positive number, being the time in milliseconds between each read. A 
-			value of zero disables the cyclic read.
+			The data format as specified by DDE, when not set 
+			on the configuration. Defaults to "CF_TEXT"
 		</dd>
 
-		<dt>Trigger read</dt>
+		<dt>command <span class="property-type">string</span></dt>
 		<dd>
-			Manually triggers a read cycle. No message parameters are used and the 
-			same message is sent on the output. Useful when longer cycle times are 
-			used, but an instant feedback is needed (for example after changing a 
-			variable). Note that the <i>dde</i> nodes are still required to read
-			the values of the variables.
+			The command to be executed with the "Execute" function,
+			when not preset on the node's configuration
 		</dd>
 	</dl>
-	-->
+	
+	<h3>Outputs</h3>
+	<ol>
+		<li>
+			Standard Output
+			<dl class="message-properties">
+				<dt>payload <span class="property-type">any</span></dt>
+				<dd>
+					The value read from the DDE endpoint on the "Request"
+					function. The value's type is casted to javascript types
+					on a best-effort manner, falling back to a plain Buffer.
+				</dd>
+			</dl>
+		</li>
+		<li>
+			Advise events
+			<dl class="message-properties">
+				<dt>payload <span class="property-type">any</span></dt>
+				<dd>
+					The new value reported by the event. The same type casting
+					conditions of the "Request" function applies.
+				</dd>
+
+				<dt>topic <span class="property-type">string</span></dt>
+				<dd>The DDE topic on which the event occurred</dd>
+
+				<dt>item <span class="property-type">string</span></dt>
+				<dd>The DDE item on which the event occurred</dd>
+
+				<dt>format <span class="property-type">string</span></dt>
+				<dd>The data format of the payload, as specified by DDE</dd>
+			</dl>
+		</li>
+	</ol>
+
+	<h3>Details</h3>
+	<p>
+		Depending on the "Function" selected, this node can perform different
+		tasks on the DDE endpoint. Each function has different options that can
+		be preset on the configuration, or if left blank, the respective message
+		properties are used
+	</p>
+	<p>
+		Note that the <code>format</code> requested, when required, must be
+		supported by the server, and the server may return an error for an
+		unsupported format, or even don't send any response at all. The value
+		of "CF_TEXT" is a sensible default that most services/topics/items should
+		support
+	</p>
+	<dl class="message-properties">
+		<dt>Request</dt>
+		<dd>
+			Reads the value of an <code>item</code> of a <code>topic</code>, in
+			the <code>format</code> specified
+		</dd>
+		<dt>Poke</dt>
+		<dd>
+			Writes the <code>payload</code> value into an <code>item</code> of a 
+			<code>topic</code>, in the <code>format</code> specified
+		</dd>
+		<dt>Execute</dt>
+		<dd>
+			Executes the <code>command</code> on a <code>topic</code>
+		</dd>
+		<dt>Advise</dt>
+		<dd>
+			Starts listening for changes of the value of an <code>item</code> of 
+			a <code>topic</code>, in the <code>format</code> specified. Every change
+			reported by the server gets emitted on the second output
+		</dd>
+		<dt>Stop Advise</dt>
+		<dd>
+			Stops listening for changes of the value of an <code>item</code> of 
+			a <code>topic</code>, in the <code>format</code> specified
+		</dd>
+		<dt>Stop All Advise</dt>
+		<dd>
+			Stops listening to all advised items
+		</dd>
+	</dl>
 </script>
 
 <script type="text/javascript">
